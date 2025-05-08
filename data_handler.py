@@ -4,51 +4,54 @@ from datetime import datetime, date
 
 def load_employee_data(file_path):
     """Load and clean employee master data with safe column handling."""
-    print(f"🔍 Loading Employee Data from: {file_path}")
-    df = pd.read_excel(file_path)
-    df.columns = df.columns.str.strip().str.lower()
-    df.fillna("", inplace=True)
+    print(f"🔍 Loading Employee Data from: {os.path.abspath(file_path)}")
+    if not os.path.exists(file_path):
+        print(f"❌ Employee Data File Not Found: {file_path}")
+        return pd.DataFrame()
 
-    # Convert dates if columns exist
-    if 'date_of_birth' in df.columns:
-        df['date_of_birth'] = pd.to_datetime(df['date_of_birth'], errors='coerce')
-        df['age'] = df['date_of_birth'].apply(lambda dob: calculate_age(dob))
-    if 'date_of_joining' in df.columns:
-        df['date_of_joining'] = pd.to_datetime(df['date_of_joining'], errors='coerce')
-        df['tenure'] = df['date_of_joining'].apply(lambda doj: calculate_tenure(doj))
-    if 'date_of_exit' in df.columns:
-        df['date_of_exit'] = pd.to_datetime(df['date_of_exit'], errors='coerce')
-
-    print("✅ Employee Data Loaded Successfully")
-    return df
+    try:
+        df = pd.read_excel(file_path)
+        df.columns = df.columns.str.strip().str.lower()
+        df.fillna("", inplace=True)
+        print("✅ Employee Data Loaded Successfully")
+        return df
+    except Exception as e:
+        print(f"❌ Error Loading Employee Data: {e}")
+        return pd.DataFrame()
 
 def load_leave_data(file_path):
     """Load HRMS leave data."""
-    print(f"🔍 Loading Leave Data from: {file_path}")
-    df = pd.read_excel(file_path)
-    df.columns = df.columns.str.strip().str.lower()
-    df.fillna("", inplace=True)
-    print("✅ Leave Data Loaded Successfully")
-    return df
+    print(f"🔍 Loading Leave Data from: {os.path.abspath(file_path)}")
+    if not os.path.exists(file_path):
+        print(f"❌ Leave Data File Not Found: {file_path}")
+        return pd.DataFrame()
+
+    try:
+        df = pd.read_excel(file_path)
+        df.columns = df.columns.str.strip().str.lower()
+        df.fillna("", inplace=True)
+        print("✅ Leave Data Loaded Successfully")
+        return df
+    except Exception as e:
+        print(f"❌ Error Loading Leave Data: {e}")
+        return pd.DataFrame()
 
 def load_sales_data(file_path):
     """Load sales INR data."""
-    print(f"🔍 Loading Sales Data from: {file_path}")
-    df = pd.read_excel(file_path)
-    df.columns = df.columns.str.strip().str.lower()
-    df.fillna("", inplace=True)
-    print("✅ Sales Data Loaded Successfully")
-    return df
+    print(f"🔍 Loading Sales Data from: {os.path.abspath(file_path)}")
+    if not os.path.exists(file_path):
+        print(f"❌ Sales Data File Not Found: {file_path}")
+        return pd.DataFrame()
 
-def calculate_age(dob):
-    if pd.isnull(dob): return None
-    today = date.today()
-    return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-
-def calculate_tenure(doj):
-    if pd.isnull(doj): return None
-    today = date.today()
-    return round((pd.Timestamp(today) - doj).days / 365, 2)
+    try:
+        df = pd.read_excel(file_path)
+        df.columns = df.columns.str.strip().str.lower()
+        df.fillna("", inplace=True)
+        print("✅ Sales Data Loaded Successfully")
+        return df
+    except Exception as e:
+        print(f"❌ Error Loading Sales Data: {e}")
+        return pd.DataFrame()
 
 def load_all_data(folder_path="data"):
     """Load all key datasets into a dictionary with deep debugging."""
@@ -56,18 +59,14 @@ def load_all_data(folder_path="data"):
         base_path = os.path.abspath(folder_path)
         print(f"🔍 Base Path: {base_path}")
 
-        # Debugging each file load
         print("🔍 Loading Employee Data...")
         employee_data = load_employee_data(os.path.join(base_path, "employee_master.xlsx"))
-        print("✅ Employee Data Loaded")
 
         print("🔍 Loading Leave Data...")
         leave_data = load_leave_data(os.path.join(base_path, "HRMS_Leave.xlsx"))
-        print("✅ Leave Data Loaded")
 
         print("🔍 Loading Sales Data...")
         sales_data = load_sales_data(os.path.join(base_path, "Sales_INR.xlsx"))
-        print("✅ Sales Data Loaded")
 
         data = {
             "employee": employee_data,
@@ -77,12 +76,6 @@ def load_all_data(folder_path="data"):
         print("✅ All Data Loaded Successfully")
         return data
 
-    except FileNotFoundError as fe:
-        print(f"❌ FileNotFoundError: {fe}")
-        raise RuntimeError(f"Data loading failed - File not found: {str(fe)}")
-    except pd.errors.EmptyDataError as ee:
-        print(f"❌ EmptyDataError: {ee}")
-        raise RuntimeError(f"Data loading failed - Empty file or invalid format: {str(ee)}")
     except Exception as e:
-        print(f"❌ Unexpected Error: {e}")
+        print(f"❌ Unexpected Error in load_all_data: {e}")
         raise RuntimeError(f"Data loading failed: {str(e)}")
