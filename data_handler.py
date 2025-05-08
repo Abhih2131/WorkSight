@@ -1,5 +1,5 @@
-
 import pandas as pd
+import os
 from datetime import datetime, date
 
 def load_employee_data(file_path):
@@ -44,14 +44,19 @@ def calculate_tenure(doj):
     today = date.today()
     return round((pd.Timestamp(today) - doj).days / 365, 2)
 
-def load_all_data(folder_path):
-    """Load all key datasets into a dictionary."""
+def load_all_data(folder_path="data"):
+    """Load all key datasets into a dictionary with dynamic path handling."""
     try:
+        base_path = os.path.abspath(folder_path)
         data = {
-            "employee": load_employee_data(f"{folder_path}/employee_master.xlsx"),
-            "leave": load_leave_data(f"{folder_path}/HRMS_Leave.xlsx"),
-            "sales": load_sales_data(f"{folder_path}/Sales_INR.xlsx")
+            "employee": load_employee_data(os.path.join(base_path, "employee_master.xlsx")),
+            "leave": load_leave_data(os.path.join(base_path, "HRMS_Leave.xlsx")),
+            "sales": load_sales_data(os.path.join(base_path, "Sales_INR.xlsx"))
         }
         return data
+    except FileNotFoundError as fe:
+        raise RuntimeError(f"Data loading failed - File not found: {str(fe)}")
+    except pd.errors.EmptyDataError as ee:
+        raise RuntimeError(f"Data loading failed - Empty file or invalid format: {str(ee)}")
     except Exception as e:
         raise RuntimeError(f"Data loading failed: {str(e)}")
