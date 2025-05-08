@@ -43,7 +43,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ✅ Load data
-data_folder = "data"
+data_folder = os.path.abspath("data")
 with st.spinner("Loading data..."):
     data = load_all_data(data_folder)
 df_emp = data['employee']
