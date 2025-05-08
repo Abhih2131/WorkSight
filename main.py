@@ -49,7 +49,7 @@ with st.spinner("Loading data..."):
 df_emp = data['employee']
 
 # ✅ Load reports
-report_folder = "reports"
+report_folder = os.path.abspath("reports")
 report_files = [f.replace(".py", "") for f in os.listdir(report_folder) if f.endswith(".py")]
 
 # ✅ Report selector
