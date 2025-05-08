@@ -7,7 +7,9 @@ def render(data_frames):
     import base64
     from io import BytesIO
     from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
     from selenium.webdriver.chrome.options import Options
+    from webdriver_manager.chrome import ChromeDriverManager
     import time
 
     def format_inr(val):
@@ -41,14 +43,16 @@ def render(data_frames):
                 return f"data:image/png;base64,{base64.b64encode(buffer.getvalue()).decode()}"
         return ""
 
-    def export_html_to_pdf_using_cdp(html_path, pdf_path):
+    def export_html_to_pdf_using_headless(html_path, pdf_path):
         chrome_options = Options()
-        chrome_options.add_argument('--headless=new')
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--window-size=1280,1696')
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--window-size=1280,1696")
+        chrome_options.add_argument("--disable-dev-shm-usage")
 
-        driver = webdriver.Chrome(options=chrome_options)
+        # ✅ Headless Chrome with WebDriver Manager (No System Packages)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
         driver.get("file://" + os.path.abspath(html_path))
         time.sleep(2)
 
@@ -71,10 +75,6 @@ def render(data_frames):
     today = pd.to_datetime("today")
     df["date_of_exit"] = pd.to_datetime(df["date_of_exit"], errors="coerce")
     df["date_of_joining"] = pd.to_datetime(df["date_of_joining"], errors="coerce")
-    df["last_promotion"] = pd.to_datetime(df["last_promotion"], errors="coerce")
-    df["last_transfer"] = pd.to_datetime(df["last_transfer"], errors="coerce")
-    df["date_of_birth"] = pd.to_datetime(df["date_of_birth"], errors="coerce")
-
     df_active = df[df["date_of_exit"].isna() | (df["date_of_exit"] > today)]
 
     st.markdown("### 🔍 Talent Profile Summary")
@@ -108,38 +108,6 @@ def render(data_frames):
         months = (delta.days % 365) // 30
         tenure = f"{years} yrs {months} months" if years > 0 else f"{months} months"
 
-    def section(title, fields):
-        merged_skills = ', '.join(filter(None, [
-            str(emp.get('skills_1', '')).strip(),
-            str(emp.get('skills_2', '')).strip(),
-            str(emp.get('skills_3', '')).strip()
-        ])) or "-"
-
-        merged_competency = "-"
-        if emp.get("competency_type") or emp.get("competency_level"):
-            merged_competency = " - ".join(
-                filter(None, [str(emp.get("competency_type", "")).strip(), str(emp.get("competency_level", "")).strip()])
-            ) or "-"
-
-        s = f'<div class="section"><h4>{title}</h4>'
-        for label, key in fields:
-            val = emp.get(key, "-")
-            if key == "merged_skills":
-                val = merged_skills
-            if key == "merged_competency":
-                val = merged_competency
-            if "ctc" in key and pd.notna(val):
-                val = format_inr(val)
-            elif any(x in key for x in ["date", "promotion", "transfer"]) and pd.notna(val):
-                val = format_date(val)
-            elif "training" in key and pd.notna(val):
-                val = f"{val} hrs"
-            elif "exp" in key and pd.notna(val) and isinstance(val, (int, float)):
-                val = f"{val} yrs"
-            s += f'<div class="row"><div class="label">{label}</div><div class="value">{val}</div></div>'
-        s += '</div>'
-        return s
-
     html = f"""
     <html><head><meta charset='utf-8'>
     <style>
@@ -168,12 +136,6 @@ def render(data_frames):
         border: 3px solid white;
         object-fit: cover;
     }}
-    .gridbox {{ display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }}
-    .section {{ padding: 15px 20px; background: #ffffff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-size: 13px; }}
-    .section h4 {{ margin-bottom: 10px; color: #0E2A47; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }}
-    .row {{ display: flex; justify-content: space-between; border-bottom: 1px solid #f0f0f0; padding: 4px 0; }}
-    .label {{ font-weight: bold; color: #555; }}
-    .value {{ color: #000; }}
     </style></head><body>
 
     <div class="profile-header">
@@ -185,40 +147,10 @@ def render(data_frames):
         </div>
         {f"<img src='{photo_b64}' class='photo'/>" if photo_b64 else ''}
     </div>
+    </body></html>
     """
 
-    html += "<div class='gridbox'>" + section("Organizational Context", [
-        ("Company", "company"), ("Business Unit", "business_unit"),
-        ("Department", "department"), ("Function", "function"),
-        ("Zone", "zone"), ("Cluster", "cluster"), ("Area", "area"), ("Location", "location")
-    ]) + section("Tenure & Movement", [
-        ("Date of Joining", "date_of_joining"), ("Last Promotion", "last_promotion"),
-        ("Last Transfer", "last_transfer"), ("Total Experience", "total_exp_yrs"),
-        ("Previous Experience", "prev_exp_in_yrs"), ("Employment Type", "employment_type")
-    ]) + "</div>"
-
-    html += "<div class='gridbox'>" + section("Compensation", [
-        ("Fixed CTC", "fixed_ctc_pa"), ("Variable CTC", "variable_ctc_pa"),
-        ("Total CTC", "total_ctc_pa")
-    ]) + section("Performance & Potential", [
-        ("Satisfaction Score", "satisfaction_score"), ("Engagement Score", "engagement_score"),
-        ("Rating 2025", "rating_25"), ("Rating 2024", "rating_24"),
-        ("Top Talent", "Top Talent"), ("Succession Ready", "succession_ready")
-    ]) + "</div>"
-
-    html += "<div class='gridbox'>" + section("Development & Learning", [
-        ("Learning Program", "learning_program"), ("Training Hours", "training_hours")
-    ]) + section("Competency & Skills", [
-        ("Competency", "competency"), ("Competency Details", "merged_competency"), ("Skills", "merged_skills")
-    ]) + "</div>"
-
-    html += "<div class='gridbox'>" + section("Education & Background", [
-        ("Qualification", "qualification"), ("Highest Qualification", "highest_qualification"),
-        ("Qualification Type", "qualification_type"), ("Previous Employers", "previous_employers"),
-        ("Last Employer", "last_employer"), ("Employment Sector", "employment_sector")
-    ]) + "</div></body></html>"
-
-    st.components.v1.html(html, height=1000, scrolling=True)
+    st.components.v1.html(html, height=800, scrolling=True)
 
     os.makedirs("exports", exist_ok=True)
     html_path = os.path.join("exports", f"profile_{emp['employee_id']}.html")
@@ -227,7 +159,7 @@ def render(data_frames):
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(html)
 
-    export_html_to_pdf_using_cdp(html_path, pdf_path)
+    export_html_to_pdf_using_headless(html_path, pdf_path)
 
     with open(pdf_path, "rb") as f:
         st.download_button("⬇️ Download as PDF", f, file_name=os.path.basename(pdf_path))
