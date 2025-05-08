@@ -44,13 +44,17 @@ st.markdown("""
 # ✅ Load data
 data_folder = os.path.abspath("data")
 print(f"🔍 Data Folder Path: {data_folder}")
-print("🔍 Checking Files...")
-print(f"🔍 Employee Data Exists: {os.path.exists(os.path.join(data_folder, 'employee_master.xlsx'))}")
-print(f"🔍 Leave Data Exists: {os.path.exists(os.path.join(data_folder, 'HRMS_Leave.xlsx'))}")
-print(f"🔍 Sales Data Exists: {os.path.exists(os.path.join(data_folder, 'Sales_INR.xlsx'))}")
 
 with st.spinner("Loading data..."):
     data = load_all_data(data_folder)
+
+if data['employee'].empty:
+    st.warning("⚠️ Employee Data is missing or failed to load.")
+if data['leave'].empty:
+    st.warning("⚠️ Leave Data is missing or failed to load.")
+if data['sales'].empty:
+    st.warning("⚠️ Sales Data is missing or failed to load.")
+
 df_emp = data['employee']
 
 # ✅ Load reports
@@ -65,7 +69,7 @@ selected_report = st.sidebar.selectbox("Report", report_files, key="report_selec
 st.sidebar.markdown("### 🧭 Filters")
 
 def get_filter_values(column):
-    return sorted(df_emp[column].dropna().unique())
+    return sorted(df_emp[column].dropna().unique()) if not df_emp.empty else []
 
 with st.sidebar:
     col1, col2 = st.columns(2)
@@ -82,14 +86,15 @@ with st.sidebar:
 
 # ✅ Apply filters
 def apply_filters(df):
-    if company: df = df[df['company'].isin(company)]
-    if employment_type: df = df[df['employment_type'].isin(employment_type)]
-    if business_unit: df = df[df['business_unit'].isin(business_unit)]
-    if zone: df = df[df['zone'].isin(zone)]
-    if area: df = df[df['area'].isin(area)]
-    if function: df = df[df['function'].isin(function)]
-    if department: df = df[df['department'].isin(department)]
-    if band: df = df[df['band'].isin(band)]
+    if not df.empty:
+        if company: df = df[df['company'].isin(company)]
+        if employment_type: df = df[df['employment_type'].isin(employment_type)]
+        if business_unit: df = df[df['business_unit'].isin(business_unit)]
+        if zone: df = df[df['zone'].isin(zone)]
+        if area: df = df[df['area'].isin(area)]
+        if function: df = df[df['function'].isin(function)]
+        if department: df = df[df['department'].isin(department)]
+        if band: df = df[df['band'].isin(band)]
     return df
 
 data['employee'] = apply_filters(df_emp)
