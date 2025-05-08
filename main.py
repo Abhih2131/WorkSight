@@ -5,7 +5,6 @@ import importlib.util
 import os
 from auth import login_form, is_logged_in, logout
 
-@st.cache_data
 def load_all_data(path):
     from data_handler import load_all_data as real_loader
     return real_loader(path)
@@ -44,6 +43,12 @@ st.markdown("""
 
 # ✅ Load data
 data_folder = os.path.abspath("data")
+print(f"🔍 Data Folder Path: {data_folder}")
+print("🔍 Checking Files...")
+print(f"🔍 Employee Data Exists: {os.path.exists(os.path.join(data_folder, 'employee_master.xlsx'))}")
+print(f"🔍 Leave Data Exists: {os.path.exists(os.path.join(data_folder, 'HRMS_Leave.xlsx'))}")
+print(f"🔍 Sales Data Exists: {os.path.exists(os.path.join(data_folder, 'Sales_INR.xlsx'))}")
+
 with st.spinner("Loading data..."):
     data = load_all_data(data_folder)
 df_emp = data['employee']
@@ -98,6 +103,7 @@ try:
     module.render(data)
 except Exception as e:
     st.error(f"Failed to load report: {e}")
+    print(f"❌ Error loading report: {e}")
 
 # ✅ Footer
 st.markdown("<div class='custom-footer'></div>", unsafe_allow_html=True)
