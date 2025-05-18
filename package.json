@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "HR Analytics Dashboard",
   "scripts": {
-    "postinstall": "python -m pip install -r worksight_P2/requirements_final.txt",
-    "dev": "python -m streamlit run worksight_P2/main.py"
+    "postinstall": "python3 -m pip install -r worksight_P2/requirements_final.txt && python3 -m pip install streamlit",
+    "dev": "python3 -m streamlit run worksight_P2/main.py"
   }
 }
