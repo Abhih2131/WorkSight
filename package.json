@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "streamlit run main.py",
+    "dev": "python -m streamlit run main.py",
     "build": "streamlit build",
-    "preview": "streamlit run main.py"
+    "preview": "python -m streamlit run main.py"
   },
   "dependencies": {
     "streamlit": "^1.31.0",
