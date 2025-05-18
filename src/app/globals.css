@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 245, 245, 245;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+@layer components {
+  .kpi-card {
+    @apply bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-200;
+  }
+  
+  .kpi-label {
+    @apply text-sm font-medium text-gray-600 mb-2;
+  }
+  
+  .kpi-value {
+    @apply text-2xl font-bold text-primary-600;
+  }
+}
