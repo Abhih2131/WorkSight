@@ -3,7 +3,6 @@ st.set_page_config(layout="wide")
 
 import importlib.util
 import os
-from auth import login_form, is_logged_in, logout
 from datetime import datetime
 import pandas as pd
 import plotly.express as px
@@ -13,16 +12,6 @@ def load_all_data(path):
     from data_handler import load_all_data as real_loader
     return real_loader(path)
 
-# Logout if triggered
-if st.query_params.get("logout") == ['true']:
-    logout()
-    st.rerun()
-
-# Show login form if not authenticated
-if not is_logged_in():
-    login_form()
-    st.stop()
-
 # Inject custom CSS
 try:
     with open("style.css") as f:
@@ -31,7 +20,7 @@ try:
 except FileNotFoundError:
     st.warning("Custom CSS file not found.")
 
-# Header with Help and Logout
+# Header
 st.markdown("""
 <div class='custom-header'>
   <div class='header-left'>
@@ -40,7 +29,6 @@ st.markdown("""
   </div>
   <div class='header-right'>
     <a href="https://yourhelp.site" target="_blank">Help</a>
-    <a href="?logout=true" class="header-logout">Logout</a>
   </div>
 </div>
 """, unsafe_allow_html=True)
