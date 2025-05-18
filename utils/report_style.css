@@ -1,0 +1,105 @@
+/* KPI Card Styling */
+.kpi-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #142A4F, #1a3a6f);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-card:hover::before {
+    opacity: 1;
+}
+
+.kpi-label {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #142A4F, #1a3a6f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+}
+
+/* Chart container styling */
+[data-testid="stArrowVegaLiteChart"],
+[data-testid="stVegaLiteChart"] {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Uniform spacing */
+div[class^="stColumn"] > div {
+    height: 100%;
+    padding: 8px;
+}
+
+/* Section headers */
+h3 {
+    color: #142A4F;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(20,42,79,0.1);
+}
+
+/* Data tables */
+.stDataFrame {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Buttons */
+.stButton > button {
+    background: linear-gradient(45deg, #142A4F, #1a3a6f);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(20,42,79,0.2);
+}

@@ -1,0 +1,159 @@
+/* Sidebar Base */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #142A4F 0%, #1a3a6f 100%) !important;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+/* Label and Headers */
+section[data-testid="stSidebar"] .stMarkdown,
+section[data-testid="stSidebar"] label {
+    color: rgba(255,255,255,0.9) !important;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* Dropdown Base Box */
+section[data-testid="stSidebar"] .stSelectbox,
+section[data-testid="stSidebar"] .stMultiSelect {
+    background-color: rgba(255,255,255,0.1) !important;
+    border-radius: 8px;
+    margin: 4px 0;
+}
+
+/* Dropdown Selected Text and Tags */
+section[data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"],
+section[data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"],
+section[data-testid="stSidebar"] .stSelectbox span[aria-selected="true"],
+section[data-testid="stSidebar"] .stMultiSelect span[aria-selected="true"] {
+    color: #142A4F !important;
+    background-color: white !important;
+    border-radius: 6px;
+}
+
+/* Selected Filter (pill) Style */
+section[data-testid="stSidebar"] .stMultiSelect span[aria-label][data-baseweb="tag"] {
+    background: linear-gradient(45deg, #406080, #507090) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 20px;
+    padding: 2px 10px;
+    margin: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Remove red border when focused */
+section[data-testid="stSidebar"] .stSelectbox:focus-within,
+section[data-testid="stSidebar"] .stMultiSelect:focus-within {
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.1) !important;
+    outline: none !important;
+}
+
+/* Main area styling */
+section.main {
+    background: linear-gradient(135deg, #f8f9fc 0%, #f5f6fa 100%) !important;
+    color: #1a1a1a !important;
+}
+
+/* Expand main content width */
+section.main > div {
+    max-width: 1800px !important;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+}
+
+/* Custom header layout */
+.custom-header {
+    background: linear-gradient(90deg, #142A4F 0%, #1a3a6f 100%);
+    padding: 15px 30px;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Brand section */
+.custom-header .header-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.custom-header .brand-name {
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #00ccff 0%, #00ffea 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+.custom-header .brand-tagline {
+    font-size: 14px;
+    font-style: italic;
+    color: rgba(255,255,255,0.9);
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+}
+
+/* Right actions */
+.custom-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.custom-header .header-right a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.custom-header .header-right a:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-1px);
+}
+
+/* Logout button styling */
+.custom-header .header-right .header-logout {
+    color: white;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 20px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.custom-header .header-right .header-logout:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-1px);
+}
+
+/* Custom footer */
+.custom-footer {
+    text-align: center;
+    padding: 15px;
+    background: linear-gradient(90deg, #142A4F 0%, #1a3a6f 100%);
+    color: rgba(255,255,255,0.9);
+    font-size: 13px;
+    margin-top: 40px;
+    font-family: 'Segoe UI', sans-serif;
+    position: sticky;
+    bottom: 0;
+    z-index: 999;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
